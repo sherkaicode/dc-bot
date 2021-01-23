@@ -1,14 +1,8 @@
 {
     "Aegis": {
-        "message": "Pokemoee"
+        "message": "pokemon"
     },
-    "Guyさん": {
-        "message": "Story"
-    },
-    "Kanji": {
-        "message": "Input Story"
-    },
-    "undefined": {
-        "message": "Input Story"
+    "shercon": {
+        "message": "test"
     }
 }

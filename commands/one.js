@@ -1,10 +1,10 @@
 module.exports = {
     name: 'one',
     description: "Kanji",
-    async execute(message, args, Discord, client, fs) {
-
+    execute(message, args, Discord, client, fs) {
         let _message = client.msgs[message.author.username].message;
-        const channel = '790480969919365130'
+        // const channel = '790480969919365130'
+        var mes;
 
         const emoj = '❌';
 
@@ -22,49 +22,39 @@ module.exports = {
             .setFooter('React \n'
                 + `${emoj} To edit Story`)
 
-        let messageEmbed = await message.channel.send(embed);
-        messageEmbed.react(emoj);
 
+        message.react('👍').then(r => {
+            message.react('👎');
+        });
+        message.channel.send(embed);
 
-        client.on('messageReactionAdd', async (reaction, user) => {
-            if (reaction.message.partial) await reaction.message.fetch();
-            if (reaction.partial) await reaction.message.fetch();
-            if (user.bot) return;
-            if (!reaction.message.guild) return;
+        message.awaitReactions((reaction, user) => user.id == message.author.id && (reaction.emoji.name == '👍' || reaction.emoji.name == '👎'),
+            { max: 1, time: 30000 }).then(collected => {
+                if (collected.first().emoji.name == '👍') {
+                    message.reply('Input Story').then(() => {
+                        message.channel.awaitMessages(m => m.author.id == message.author.id,
+                            { max: 1, time: 30000 }).then(collected => {
+                                mes = collected.first().content
+                                if (collected.first().content.toLowerCase()) {
 
-            if (reaction.message.channel.id = channel) {
-
-                if (reaction.emoji.name === emoj) {
-                    const filter = m => {
-                        return m.author.id === message.author.id;
-                    }
-
-                    message.channel.send('Input Story').then(() => {
-                        message.channel.awaitMessages(filter, {
-                            max: 1,
-                            errors: ['max']
-                        })
-                            .then(message => {
-                                message = message.first()
-                                client.msgs[message.author.username] = {
-                                    message: message.content
+                                    client.msgs[message.author.username] = {
+                                        message: mes
+                                    }
+                                    fs.writeFile("./Database/msgs.json", JSON.stringify(client.msgs, null, 4), err => {
+                                        if (err) throw err;
+                                    })
+                                    message.reply('Logged');
                                 }
-                                fs.writeFile("./Database/msgs.json", JSON.stringify(client.msgs, null, 4), err => {
-                                    if (err) throw err;
-                                    message.channel.send("logged");
 
-                                });
-
+                                else
+                                    message.reply('Operation canceled.');
                             })
                     })
                 }
+                else
+                    message.reply('Operation canceled.');
+            })
 
-
-            }
-            else {
-                return;
-            }
-        });
 
     }
 }
