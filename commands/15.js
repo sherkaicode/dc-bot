@@ -1,46 +1,50 @@
 module.exports = {
-    name: 'one',
+    name: '15',
     description: "Kanji",
-    execute(message, args, Discord, client, fs) {
-        let _message = client.msgs[message.author.username].message;
+    async execute(message, args, Discord, client, fs) {
+        let _message = client.msgs15[message.author.username].message;
         // const channel = '790480969919365130'
         var mes;
 
         const emoj = '❌';
+        const emojd = '🍥';
 
         let embed = new Discord.MessageEmbed()
             .setColor('#e42643')
-            .setTitle('一')
-            .setURL('https://jisho.org/search/%E4%B8%80%23kanji%27')
-            .setDescription('[いち]')
-            .setThumbnail('https://raw.githubusercontent.com/mistval/kanji_images/master/gifs/4e00.gif')
+            .setTitle('目')
+            .setURL('https://jisho.org/search/%E7%9B%AE%23kanji')
+            .setDescription('[め]')
+            .setThumbnail('https://raw.githubusercontent.com/mistval/kanji_images/master/gifs/76ee.gif')
             .addFields(
-                { name: 'English', value: 'one' },
+                { name: 'English', value: 'Eye' },
                 { name: 'Primitives', value: 'None' },
                 { name: 'Story', value: _message },
             )
             .setFooter('React \n'
-                + `${emoj} To edit Story`)
+                + `${emoj} To edit Story \n`
+                + `${emojd} To Cancel`)
 
 
-        message.react('👍').then(r => {
-            message.react('👎');
+        message.react(emoj).then(r => {
+            message.react(emojd);
         });
+        
         message.channel.send(embed);
+        
 
-        message.awaitReactions((reaction, user) => user.id == message.author.id && (reaction.emoji.name == '👍' || reaction.emoji.name == '👎'),
+        message.awaitReactions((reaction, user) => user.id == message.author.id && (reaction.emoji.name == emoj || reaction.emoji.name == emojd),
             { max: 1, time: 30000 }).then(collected => {
-                if (collected.first().emoji.name == '👍') {
+                if (collected.first().emoji.name == emoj) {
                     message.reply('Input Story').then(() => {
                         message.channel.awaitMessages(m => m.author.id == message.author.id,
                             { max: 1, time: 30000 }).then(collected => {
                                 mes = collected.first().content
                                 if (collected.first().content.toLowerCase()) {
 
-                                    client.msgs[message.author.username] = {
+                                    client.msgs15[message.author.username] = {
                                         message: mes
                                     }
-                                    fs.writeFile("./Database/msgs.json", JSON.stringify(client.msgs, null, 4), err => {
+                                    fs.writeFile("./Database/15.json", JSON.stringify(client.msgs15, null, 4), err => {
                                         if (err) throw err;
                                     })
                                     message.reply('Logged');
